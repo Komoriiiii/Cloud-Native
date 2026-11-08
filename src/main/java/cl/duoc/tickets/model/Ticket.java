@@ -25,9 +25,9 @@ public class Ticket {
     @Column(nullable = false)
     private EstadoTicket estado;
 
-    /** Ruta del PDF dentro del EFS (null si ya se elimino tras subirlo a S3). */
+    /** ruta del pdf dentro del efs  */
     private String efsPath;
-    /** Clave del objeto en S3, ej: evento123/usuarioX/ticket-AB12CD34.pdf */
+    /** clave del objeto en s3*/
     private String s3Key;
 
     private LocalDateTime creadoEn;

@@ -10,7 +10,6 @@ import software.amazon.awssdk.services.s3.S3Client;
 @Configuration
 public class AwsConfig {
 
-    /** Usa la cadena de credenciales por defecto: rol IAM de la EC2, variables de entorno o ~/.aws. */
     @Bean
     public S3Client s3Client(@Value("${aws.region}") String region) {
         return S3Client.builder()

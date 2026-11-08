@@ -4,7 +4,7 @@ import cl.duoc.tickets.model.EstadoTicket;
 import jakarta.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
 
-/** Todos los campos son opcionales: solo se modifican los que vienen informados. */
+/** todos los campos son opcionales */
 public record TicketUpdateRequest(
         String nombreAsistente,
         String tipoEntrada,

@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-/** Almacenamiento temporal de los tickets en el sistema de archivos montado desde EFS. */
+/** almacenamiento temporal de los tickets en el sistema */
 @Service
 public class EfsStorageService {
 

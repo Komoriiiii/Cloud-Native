@@ -54,14 +54,14 @@ public class TicketService {
         t.setEstado(r.estado() != null ? r.estado() : EstadoTicket.RESERVADO);
         t.setCodigo(UUID.randomUUID().toString().substring(0, 8).toUpperCase());
 
-        escribirPdfEnEfs(t);                 // 1. se genera y guarda en EFS
+        escribirPdfEnEfs(t);                 // se genera y guarda en efs
         if (subirS3) {
-            subirAS3Interno(t);              // 2. subida automatica a S3
+            subirAS3Interno(t);              // subida automatica a s3
         }
         return repo.save(t);
     }
 
-    // ---------- Subir a S3 ----------
+    // subir a s3
     @Transactional
     public Ticket subirAS3(Long id) {
         Ticket t = buscar(id);
@@ -69,7 +69,7 @@ public class TicketService {
         return repo.save(t);
     }
 
-    // ---------- Consultar ----------
+    // buscar
     public Ticket buscar(Long id) {
         return repo.findById(id).orElseThrow(() -> new TicketNoEncontradoException("Ticket " + id + " no existe"));
     }
@@ -78,7 +78,7 @@ public class TicketService {
         return repo.findByEventoId(eventoId);
     }
 
-    // ---------- Descargar ----------
+    // descargar
     public byte[] descargar(Ticket t) {
         if (t.getS3Key() != null) return s3.descargar(t.getS3Key());
         if (efs.existe(t.getEfsPath())) return efs.leer(t.getEfsPath());
@@ -98,7 +98,7 @@ public class TicketService {
         return "ticket-" + t.getCodigo() + ".pdf";
     }
 
-    // ---------- Modificar ----------
+    // modificar
     @Transactional
     public Ticket actualizar(Long id, TicketUpdateRequest r) {
         Ticket t = buscar(id);
@@ -108,12 +108,12 @@ public class TicketService {
         if (r.estado() != null) t.setEstado(r.estado());
 
         boolean estabaEnS3 = t.getS3Key() != null;
-        escribirPdfEnEfs(t);                 // se regenera el PDF con los datos nuevos
-        if (estabaEnS3) subirAS3Interno(t);  // y se reemplaza en S3
+        escribirPdfEnEfs(t);                 // se genera el pdf con los datos nuevos
+        if (estabaEnS3) subirAS3Interno(t);  // se reemplaza en S3
         return repo.save(t);
     }
 
-    // ---------- Eliminar ----------
+    // eliminar
     @Transactional
     public void eliminar(Long id) {
         Ticket t = buscar(id);
@@ -122,7 +122,7 @@ public class TicketService {
         repo.delete(t);
     }
 
-    // ---------- Estadisticas ----------
+    // estadisticas
     public EstadisticasEvento estadisticas(String eventoId) {
         List<Ticket> tickets = repo.findByEventoId(eventoId);
         long reservados = contar(tickets, EstadoTicket.RESERVADO);
@@ -136,7 +136,7 @@ public class TicketService {
                 porTipo);
     }
 
-    // ---------- Auxiliares ----------
+    // misc
     private void escribirPdfEnEfs(Ticket t) {
         byte[] data = pdf.generar(t);
         Path p = efs.guardar(t.getEventoId(), t.getUsuarioId(), t.getCodigo(), data);

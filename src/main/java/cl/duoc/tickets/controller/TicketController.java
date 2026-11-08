@@ -25,14 +25,14 @@ public class TicketController {
         this.service = service;
     }
 
-    /** 1. Generar ticket (PDF en EFS). Por defecto lo sube a S3 automaticamente. */
+    /** generar ticket (pdf en efs) lo sube a s3 automaticamente. */
     @PostMapping("/tickets")
     public ResponseEntity<Ticket> generar(@Valid @RequestBody TicketRequest request,
                                           @RequestParam(defaultValue = "true") boolean subirS3) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.generar(request, subirS3));
     }
 
-    /** 2. Subir (o re-subir) un ticket existente a S3. */
+    /** subir (o resubir) un ticket existente a s3 */
     @PostMapping("/tickets/{id}/subir")
     public Ticket subir(@PathVariable Long id) {
         return service.subirAS3(id);
@@ -48,40 +48,40 @@ public class TicketController {
         return service.listarPorEvento(eventoId);
     }
 
-    /** 3a. Descargar un ticket (PDF). */
+    /** descargar un ticket (pdf) */
     @GetMapping("/tickets/{id}/descargar")
     public ResponseEntity<byte[]> descargar(@PathVariable Long id) {
         Ticket t = service.buscar(id);
         return archivo(service.descargar(t), service.nombreArchivo(t), MediaType.APPLICATION_PDF);
     }
 
-    /** 3b. Descargar todos los tickets de un evento (ZIP). */
+    /** descargar todos los tickets de un evento (zip) */
     @GetMapping("/tickets/evento/{eventoId}/descargar")
     public ResponseEntity<byte[]> descargarPorEvento(@PathVariable String eventoId) {
         return archivo(service.descargarZipPorEvento(eventoId), eventoId + ".zip", MediaType.parseMediaType("application/zip"));
     }
 
-    /** 3c. Descargar los tickets de un usuario dentro de un evento (ZIP). */
+    /** descargar los tickets de un usuario dentro de un evento (zip) */
     @GetMapping("/tickets/evento/{eventoId}/usuario/{usuarioId}/descargar")
     public ResponseEntity<byte[]> descargarPorUsuario(@PathVariable String eventoId, @PathVariable String usuarioId) {
         return archivo(service.descargarZipPorUsuario(eventoId, usuarioId), eventoId + "-" + usuarioId + ".zip",
                 MediaType.parseMediaType("application/zip"));
     }
 
-    /** 4. Modificar detalles del ticket. */
+    /** modificar detalles del ticket */
     @PutMapping("/tickets/{id}")
     public Ticket actualizar(@PathVariable Long id, @Valid @RequestBody TicketUpdateRequest request) {
         return service.actualizar(id, request);
     }
 
-    /** 5. Eliminar ticket (BD + EFS + S3). */
+    /**  eliminar ticket (BD, EFS y S3) */
     @DeleteMapping("/tickets/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         service.eliminar(id);
         return ResponseEntity.noContent().build();
     }
 
-    /** 6. Estadisticas de ventas y reservas por evento. */
+    /** estadisticas de ventas y reservas por evento */
     @GetMapping("/eventos/{eventoId}/estadisticas")
     public EstadisticasEvento estadisticas(@PathVariable String eventoId) {
         return service.estadisticas(eventoId);
