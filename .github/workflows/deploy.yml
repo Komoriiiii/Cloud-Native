@@ -40,7 +40,9 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           sudo fuser -k 8080/tcp || true
-          pkill -f java || true
           cd /home/ec2-user
-          mv target/tickets-service-1.0.0.jar .
-          nohup java -jar tickets-service-1.0.0.jar > app.log 2>&1 &
+          mv -f target/tickets-service-1.0.0.jar .
+          S3_BUCKET=${{ secrets.S3_BUCKET }} AWS_REGION=${{ secrets.AWS_REGION }} \
+          nohup java -jar tickets-service-1.0.0.jar > app.log 2>&1 < /dev/null &
+          sleep 8
+          tail -n 30 app.log
