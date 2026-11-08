@@ -5,7 +5,7 @@ Proyecto de **Desarrollo Cloud Native (CDY2204)** – Semana 3.
 Es una API para una startup que vende entradas a eventos. Cuando alguien reserva o compra una entrada, la API genera un **ticket en PDF**, lo guarda y después lo sube a la nube, ordenado por evento y por usuario.
 
 ## ¿Qué hace?
-
+ 
 - Genera un ticket en PDF para cada reserva o compra.
 - Guarda el PDF primero en **EFS** (una carpeta temporal en la nube).
 - Lo sube a **S3** con esta forma: `evento123/usuarioX/ticket-CODIGO.pdf`.
